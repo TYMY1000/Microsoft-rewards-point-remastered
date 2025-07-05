@@ -1,7 +1,7 @@
 @echo off
 setlocal enabledelayedexpansion
 
-rem List of 100 four-letter words (all unique)
+
 set words[0]=code
 set words[1]=data
 set words[2]=byte
@@ -103,47 +103,46 @@ set words[97]=sort
 set words[98]=redo
 set words[99]=jump
 
-rem Track searched words to avoid repetition
+
 for /L %%i in (0,1,99) do set used[%%i]=0
 
-rem Set counter to track number of searches
 set count=0
 
 :loop
-rem Stop when 100 searches are completed
+
 if %count% GEQ 100 (
     echo Completed 100 unique searches. Exiting...
     exit /b
 )
 
 :find_word
-rem Generate a random index (0 to 99)
+
 set /a index=%random% %% 100
 
-rem Check if the word at this index has already been used
+
 if !used[%index%]!==1 goto find_word
 
-rem Mark word as used
+
 set used[%index%]=1
 set query=!words[%index%]!
 
-rem Open Bing in a new tab using Edge (without switching focus)
+
 start "" msedge.exe --profile-directory="Default" --new-tab "https://www.bing.com"
 
-rem Wait for Bing to load
+
 ping 127.0.0.1 -n 5 >nul
 
-rem Focus the search box (without activating Edge)
+
 nircmd sendkeypress ctrl+l
 ping 127.0.0.1 -n 2 >nul
 
-rem **Fix: Clear previous search by selecting all text and deleting it**
+
 nircmd sendkeypress ctrl+a
 ping 127.0.0.1 -n 2 >nul
 nircmd sendkeypress backspace
 ping 127.0.0.1 -n 2 >nul
 
-rem Type the search query with a slight delay per character
+
 for /l %%i in (0,1,31) do (
     set char=!query:~%%i,1!
     if not "!char!"=="" (
@@ -152,16 +151,13 @@ for /l %%i in (0,1,31) do (
     )
 )
 
-rem Ensure typing is complete before pressing Enter
+
 ping 127.0.0.1 -n 2 >nul
 
-rem Press Enter using PowerShell (without switching focus)
 powershell -command "$wshell = New-Object -ComObject WScript.Shell; Start-Sleep -Milliseconds 300; $wshell.SendKeys('{ENTER}')"
 
-rem Increment the search counter
 set /a count+=1
 
-rem Random delay before the next search (10-25 seconds)
 set /a delay= 10
 ping 127.0.0.1 -n %delay% >nul
 
