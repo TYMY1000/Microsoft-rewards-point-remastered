@@ -1,2 +1,3 @@
 # Microsoft-rewards-point-remastered
-download and run 
+nircmd is required to be able to run 
+enjoy
